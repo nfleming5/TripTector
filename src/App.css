@@ -1,38 +1,82 @@
-.App {
-  text-align: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+.app-container {
+  font-family: sans-serif;
+  color: #333;
   min-height: 100vh;
+  /* Remove default body margin/padding if needed */
+}
+
+/* HERO SECTION */
+.hero-section {
+  /* Replace this URL with the image you'd like to show */
+  background: url("https://images.unsplash.com/photo-1505751172876-fa1923c5c528")
+    no-repeat center center / cover;
+  height: 400px; /* Height of hero area; adjust as you like */
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  text-align: center;
   color: white;
+  position: relative;
 }
 
-.App-link {
-  color: #61dafb;
+/* Optional: If you want a slight overlay effect */
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4); /* Dark overlay */
+  z-index: 1;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.hero-title,
+.hero-subtitle {
+  z-index: 2; /* Ensure text is above the overlay */
+}
+
+.hero-title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+  font-size: 1.4rem;
+}
+
+/* FORM CONTAINER */
+.form-container {
+  max-width: 600px;
+  margin: -80px auto 0; /* Negative top margin to overlap hero if desired */
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 5; /* Above hero overlay */
+}
+
+/* If you want some spacing around your fields */
+.form-container label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+.form-container input {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+}
+
+button[type="submit"] {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
 }
