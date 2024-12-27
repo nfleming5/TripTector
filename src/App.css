@@ -1,82 +1,119 @@
-* {
+/* RESET */
+html,
+body {
   margin: 0;
   padding: 0;
+  height: 100%; /* ensures body can fill the viewport for 100vh usage */
+}
+
+* {
   box-sizing: border-box;
 }
 
+/* 
+  ENTIRE SCREEN BACKGROUND
+  This fills the full window with an image. 
+*/
 .app-container {
+  width: 100%;
+  height: 100vh; /* fill the entire browser viewport */
+  background: url("https://images.unsplash.com/photo-1535063406830-27dfae54262a?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHRyYWRpdGlvbmFsJTIwYmFja2dyb3VuZHxlbnwwfHwwfHx8MA%3D%3D")
+    no-repeat center center / cover;
+
+  position: relative; /* so absolutely-positioned children can overlap */
   font-family: sans-serif;
-  color: #333;
-  min-height: 100vh;
-  /* Remove default body margin/padding if needed */
+  color: #fff; /* default text color on top of background */
+  overflow: hidden; /* optional if you never want scrolling */
 }
 
-/* HERO SECTION */
-.hero-section {
-  /* Replace this URL with the image you'd like to show */
-  background: url("https://images.unsplash.com/photo-1505751172876-fa1923c5c528")
-    no-repeat center center / cover;
-  height: 400px; /* Height of hero area; adjust as you like */
+/* TITLE & SUBTITLE: Place them where you like. 
+   Example: top-left with some margin. */
+.hero-title {
+  position: absolute;
+  font-family: "Courier New", Courier, monospace;
+  top: 80px;
+  left: 480px;
+  font-size: 5rem;
+  margin: 0;
+  color: #ffffffe9;
+  /*#beba88ef*/
+  color: #ffffffef;
+  text-shadow: 0 0 5px #050505ef, 0 0 10px #7b7a6aef, 0 0 20px #beba88ef;
+}
+
+.hero-subtitle {
+  position: absolute;
+  font-family: monospace;
+  top: 190px; /* just below the title */
+  left: 250px;
+  font-size: 1.6rem;
+  margin: 0;
+
+  color: #ffffffef;
+  text-shadow: 0 0 5px #000000ef, 0 0 10px #989893ef, 0 0 20px #beba88ef;
+}
+
+/* 
+  SEARCH-BAR / FORM CONTAINER 
+  We'll place it absolutely to overlap the background. 
+*/
+.search-bar-container {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background: rgb(215, 215, 215); /* a white, semi-transparent box */
+  color: #333;
+  border-radius: 20px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
+  z-index: 3; /* in front of background & plane */
+  max-width: 1400px; /* or whatever fits your design */
+}
+
+/* The actual row holding the label+inputs horizontally */
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* spacing between fields */
+  flex-wrap: wrap;
+}
+
+/* Each field is a small block containing label & input
+   We keep label above input for clarity. 
+   If you want them side by side, use flex-direction: row. */
+.search-field {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: white;
-  position: relative;
+  min-width: 160px; /* ensures it doesn't shrink too small */
+  margin-bottom: 0.5rem; /* small bottom margin for wrap scenarios */
 }
 
-/* Optional: If you want a slight overlay effect */
-.hero-section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4); /* Dark overlay */
-  z-index: 1;
-}
-
-.hero-title,
-.hero-subtitle {
-  z-index: 2; /* Ensure text is above the overlay */
-}
-
-.hero-title {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.hero-subtitle {
-  font-size: 1.4rem;
-}
-
-/* FORM CONTAINER */
-.form-container {
-  max-width: 600px;
-  margin: -80px auto 0; /* Negative top margin to overlap hero if desired */
-  background: #fff;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  position: relative;
-  z-index: 5; /* Above hero overlay */
-}
-
-/* If you want some spacing around your fields */
-.form-container label {
-  display: block;
-  margin-bottom: 0.5rem;
+.search-field label {
   font-weight: 600;
-}
-.form-container input {
-  width: 100%;
-  margin-bottom: 1rem;
-  padding: 0.5rem;
+  margin-bottom: 0.3rem;
 }
 
-button[type="submit"] {
-  padding: 0.5rem 1rem;
+.search-field input {
+  padding: 0.5rem;
+  border: 1px solid #fffefe;
+  border-radius: 4px;
+}
+
+/* The submit button in the row */
+.search-row button {
+  background: #444;
+  color: #fff;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
+}
+
+.search-bar-container h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #333;
 }
