@@ -1,42 +1,36 @@
-import { useState } from 'react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function ItineraryForm() {
-  // Step 1: useState for form fields
+function ItineraryForm({ onSubmit }) {
   const [itinerary, setItinerary] = useState({
-    departureDate: '',
-    returnDate: '',
-    departureAirport: '',
-    destination: '',
+    departureDate: "",
+    returnDate: "",
+    departureAirport: "",
+    destination: "",
   });
 
-  // Step 2: handleChange for each form field
+  // React Router v6: useNavigate replaces useHistory
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setItinerary((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
-
-  // Step 3: handleSubmit for when the form is submitted
+  
   const handleSubmit = (e) => {
     e.preventDefault();
-    // For now, just log the itinerary to the console
-    console.log('Itinerary Submitted:', itinerary);
-
-    // Later steps:
-    //  - Validate input
-    //  - Call weather or scam APIs
-    //  - Save itinerary to a database, etc.
-
-    // Example "thank you" message or user feedback
-    alert('Itinerary submitted! Check the console for details.');
+    // Send data back up to parent (App.js)
+    onSubmit(itinerary);
+    // Navigate to /results
+    navigate("/results");
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>Plan Your Trip</h2>
-
       <div>
         <label>Departure Date:</label>
         <input
@@ -46,7 +40,6 @@ function ItineraryForm() {
           onChange={handleChange}
         />
       </div>
-
       <div>
         <label>Return Date:</label>
         <input
@@ -56,7 +49,6 @@ function ItineraryForm() {
           onChange={handleChange}
         />
       </div>
-
       <div>
         <label>Departure Airport:</label>
         <input
@@ -67,18 +59,17 @@ function ItineraryForm() {
           onChange={handleChange}
         />
       </div>
-
       <div>
-        <label>Destination:</label>
+        <label>Destination City:</label>
         <input
           type="text"
           name="destination"
-          placeholder="e.g. LAX"
+          placeholder="e.g. Paris"
           value={itinerary.destination}
           onChange={handleChange}
+          required
         />
       </div>
-
       <button type="submit">Submit</button>
     </form>
   );
