@@ -1,10 +1,11 @@
-// App.js
+// src/App.js
 import React, { useEffect, useState } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
 import CultureTips from "./CultureTips";
 import ItineraryForm from "./ItineraryForm";
 import ScamReport from "./ScamReport";
+import "./ScamReport.css";
 import WeatherInfo from "./WeatherInfo";
 // import ClearCacheButton from "./ClearCacheButton"; // Optional: If implemented
 
