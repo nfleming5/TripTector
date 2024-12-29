@@ -79,7 +79,9 @@ function ItineraryForm({ onSubmit }) {
           />
         </div>
 
-        <button type="submit">Submit</button>
+        <button type="submit" className="submit-button1">
+          <img src="/arrow.png" alt="Submit" />
+        </button>
       </div>
     </form>
   );
