@@ -1,6 +1,16 @@
 // src/ScamReport.js
 
-import { addDoc, collection, getDocs, limit, orderBy, query, startAfter, Timestamp, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+  Timestamp,
+  where,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import {
   FaCreditCard,
@@ -81,7 +91,10 @@ function ScamReport({ itinerary }) {
       console.log(`Fetched initial reports count: ${reportsList.length}`);
       reportsList.forEach((report, index) => {
         console.log(`Report ${index + 1}:`, report);
-        console.log(`Report ${index + 1} Timestamp:`, report.timestamp.toDate().toISOString());
+        console.log(
+          `Report ${index + 1} Timestamp:`,
+          report.timestamp.toDate().toISOString()
+        );
       });
 
       if (reportsList.length > 0) {
@@ -94,7 +107,9 @@ function ScamReport({ itinerary }) {
       }
     } catch (error) {
       console.error("Error fetching initial scam reports:", error.message);
-      console.error("Ensure Firestore has the correct composite index for this query.");
+      console.error(
+        "Ensure Firestore has the correct composite index for this query."
+      );
     } finally {
       setLoadingReports(false);
     }
@@ -131,7 +146,10 @@ function ScamReport({ itinerary }) {
       console.log(`Fetched more reports count: ${reportsList.length}`);
       reportsList.forEach((report, index) => {
         console.log(`Loaded Report ${index + 1}:`, report);
-        console.log(`Loaded Report ${index + 1} Timestamp:`, report.timestamp.toDate().toISOString());
+        console.log(
+          `Loaded Report ${index + 1} Timestamp:`,
+          report.timestamp.toDate().toISOString()
+        );
       });
 
       if (reportsList.length > 0) {
@@ -144,7 +162,9 @@ function ScamReport({ itinerary }) {
       }
     } catch (error) {
       console.error("Error fetching more scam reports:", error.message);
-      console.error("Ensure Firestore has the correct composite index for this query.");
+      console.error(
+        "Ensure Firestore has the correct composite index for this query."
+      );
     } finally {
       setLoadingReports(false);
     }
@@ -247,7 +267,9 @@ function ScamReport({ itinerary }) {
             onChange={(e) => setComments(e.target.value)}
             placeholder="Describe the scam in more detail..."
             rows="4"
+            maxLength={250}
           ></textarea>
+          <p>{250 - comments.length} characters left</p>
         </div>
 
         {/* Submit Button */}
@@ -289,10 +311,12 @@ function ScamReport({ itinerary }) {
                     <h4>{report.scamType}</h4>
                   </div>
                   <p className="report-location">
-                    <strong>Location:</strong> {capitalizeWords(report.location)}
+                    <strong>Location:</strong>{" "}
+                    {capitalizeWords(report.location)}
                   </p>
                   <p className="report-comments">
-                    <strong>Details:</strong> {report.comments || "No additional details."}
+                    <strong>Details:</strong>{" "}
+                    {report.comments || "No additional details."}
                   </p>
                   <p className="report-timestamp">
                     <strong>Reported on:</strong>{" "}

@@ -40,7 +40,8 @@ function App() {
                 {/* HERO SECTION */}
                 <h1 className="hero-title">TripTector</h1>
                 <p className="hero-subtitle">
-                  Shield yourself from travel scams and plan your journey with ease
+                  Shield yourself from travel scams and plan your journey with
+                  ease
                 </p>
 
                 {/* FORM CONTAINER */}
@@ -63,7 +64,10 @@ function App() {
                   {/* <ClearCacheButton /> */}
                 </div>
               ) : (
-                <div className="card" style={{ padding: "1rem", margin: "2rem" }}>
+                <div
+                  className="card"
+                  style={{ padding: "1rem", margin: "2rem" }}
+                >
                   <h2>No itinerary found.</h2>
                   <p>
                     Please return to the homepage and enter your trip details.

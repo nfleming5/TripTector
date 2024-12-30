@@ -33,11 +33,40 @@ function ItineraryForm({ onSubmit }) {
 
   return (
     <form onSubmit={handleSubmit} className="search-form">
-      <h2>Plan Your Trip</h2>
-
       <div className="search-row">
-        <div className="search-field">
-          <label>Departure Date:</label>
+        {/* Departure Airport (From) */}
+        <div className="search-block">
+          <span className="search-label">From</span>
+          <input
+            type="text"
+            name="departureAirport"
+            placeholder="City or airport"
+            value={itinerary.departureAirport}
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* Swap icon if you want that two-way arrow in the middle */}
+        <div className="swap-icon">
+          <img src="/swap.png" alt="Swap" />
+        </div>
+
+        {/* Destination City (To) */}
+        <div className="search-block">
+          <span className="search-label">To</span>
+          <input
+            type="text"
+            name="destination"
+            placeholder="Country, city or airport"
+            value={itinerary.destination}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        {/* Departure Date */}
+        <div className="search-block">
+          <span className="search-label">Depart</span>
           <input
             type="date"
             name="departureDate"
@@ -46,8 +75,9 @@ function ItineraryForm({ onSubmit }) {
           />
         </div>
 
-        <div className="search-field">
-          <label>Return Date:</label>
+        {/* Return Date */}
+        <div className="search-block">
+          <span className="search-label">Return</span>
           <input
             type="date"
             name="returnDate"
@@ -56,31 +86,9 @@ function ItineraryForm({ onSubmit }) {
           />
         </div>
 
-        <div className="search-field">
-          <label>Departure Airport:</label>
-          <input
-            type="text"
-            name="departureAirport"
-            placeholder="e.g. JFK"
-            value={itinerary.departureAirport}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="search-field">
-          <label>Destination City:</label>
-          <input
-            type="text"
-            name="destination"
-            placeholder="e.g. Paris"
-            value={itinerary.destination}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <button type="submit" className="submit-button1">
-          <img src="/arrow.png" alt="Submit" />
+        {/* Search Button */}
+        <button type="submit" className="search-button">
+          Search
         </button>
       </div>
     </form>

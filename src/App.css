@@ -51,70 +51,83 @@ body {
 }
 
 /* FORM CONTAINER */
-.form-container {
-  background: rgb(235, 235, 235); /* a white, semi-transparent box */
-  color: #333; /* Ensure form text is dark */
-  border-radius: 20px;
-  padding: 2rem 3rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.75);
-  z-index: 3; /* in front of background & titles */
-  max-width: 800px; /* adjust as needed */
-  width: 90%; /* responsive width */
+.search-form {
+  margin: 0 auto; /* center horizontally if desired */
+  max-width: 950px; /* or whatever width fits your layout */
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-/* The actual row holding the label+inputs horizontally */
+/* The row that holds all blocks side by side */
 .search-row {
   display: flex;
   align-items: center;
-  gap: 1rem; /* spacing between fields */
-  flex-wrap: wrap;
+  background-color: #ffffff; /* white background for the bar */
+  border-radius: 40px; /* rounded corners for a pill-like shape */
+  overflow: hidden; /* ensures children corners follow the parent’s radius */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9); /* subtle shadow */
 }
 
-/* Each field is a small block containing label & input */
-.search-field {
+/* Each field block (From, To, Depart, Return) */
+.search-block {
   display: flex;
   flex-direction: column;
-  min-width: 160px; /* ensures it doesn't shrink too small */
-  margin-bottom: 0.5rem; /* small bottom margin for wrap scenarios */
+  padding: 0.5rem 1rem; /* spacing around the text and input */
+  min-width: 120px; /* so they don’t collapse too small */
 }
 
-.search-field label {
-  font-weight: 600;
-  margin-bottom: 0.3rem;
+/* The label text (From, To, etc.) */
+.search-label {
+  font-size: 0.85rem;
+  color: #666; /* a subtle gray for label text */
+  margin-bottom: 0.2rem;
 }
 
-.search-field input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-.search-form h2 {
-  font-family: "Courier New", Courier, monospace;
-
-  font-size: 1.7rem;
-  font-weight: bold;
-  color: #000000ef;
-  text-shadow: 0 0 5px #ffffffef, 0 0 10px #8c8c8cef, 0 0 20px #b0b0b0ef;
-}
-.search-form label {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  /* or whatever font you prefer */
-  font-size: 0.9rem;
-}
-/* The submit button in the row */
-.submit-button1 {
+/* The inputs themselves */
+.search-block input {
+  border: none;
+  outline: none;
+  font-size: 1rem;
   background-color: transparent;
+  padding: 0.2rem 0; /* minimal vertical padding so it lines up nicely */
+}
+
+/* If you want a small border to separate each block */
+.search-block:not(:last-child) {
+  border-right: 1px solid #ddd;
+}
+
+/* The swap icon in the middle, if used */
+.swap-icon {
+  padding: 0 0.5rem;
+  cursor: pointer;
+  border-right: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+}
+
+.swap-icon img {
+  width: 24px;
+  height: 24px;
+}
+
+/* The final search button */
+.search-button {
+  background-color: #ff0000a8; /* e.g. Skyscanner's bluish color */
+  color: #fff;
+  font-size: 1rem;
+  padding: 0.8rem 1.2rem;
   border: none;
   cursor: pointer;
-  width: 50px;
-  height: 50px;
-  padding: 0;
+  transition: background-color 0.3s ease;
+  min-height: 78px; /* so it matches the vertical height of the row */
+  border-radius: 0; /* so it matches the parent's corners on the right side */
+
+  /* Because we have border-radius: 40px on the .search-row,
+     we can either let that shape the right edge or do something like border-top-right-radius, etc. */
 }
 
-.submit-button1 img {
-  width: 130%;
-  height: 120%;
-  object-fit: fill;
+.search-button:hover {
+  background-color: #000000;
 }
 
 /* RESULTS PAGE */
