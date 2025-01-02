@@ -1,5 +1,5 @@
 // ItineraryForm.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function ItineraryForm({ onSubmit }) {
@@ -11,24 +11,71 @@ function ItineraryForm({ onSubmit }) {
     destination: "",
   });
 
+  // NEW: state for the search query and suggestions array
+  const [destQuery, setDestQuery] = useState("");
+  const [destSuggestions, setDestSuggestions] = useState([]);
+
   const navigate = useNavigate();
 
-  // Handle input changes
+  // Handle standard input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setItinerary((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    // If the user is typing in the "destination" field, also update destQuery
+    if (name === "destination") {
+      setDestQuery(value);
+    }
   };
 
-  // Handle form submission
+  // Autocomplete fetch from GeoNames
+  useEffect(() => {
+    // Only search if user has typed at least 2-3 characters
+    if (destQuery.length < 2) {
+      setDestSuggestions([]);
+      return;
+    }
+
+    const username = process.env.REACT_APP_GEONAMES_USERNAME; // from your .env
+    const url = `http://api.geonames.org/searchJSON?username=${username}&name_startsWith=${encodeURIComponent(
+      destQuery
+    )}&featureClass=P&maxRows=10`;
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.geonames) {
+          setDestSuggestions(data.geonames);
+        } else {
+          setDestSuggestions([]);
+        }
+      })
+      .catch((err) => {
+        console.error("GeoNames API Error:", err);
+        setDestSuggestions([]);
+      });
+  }, [destQuery]);
+
+  // Submit form
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Send data back up to parent (App.js)
     onSubmit(itinerary);
-    // Navigate to /results
     navigate("/results");
+  };
+
+  // When user clicks a suggestion, fill the input with that name
+  const handleSelectSuggestion = (place) => {
+    // place is an object from data.geonames
+    const cityName = place.name;
+    setItinerary((prev) => ({
+      ...prev,
+      destination: cityName,
+    }));
+    setDestQuery(cityName);
+    setDestSuggestions([]); // hide suggestions
   };
 
   return (
@@ -46,13 +93,13 @@ function ItineraryForm({ onSubmit }) {
           />
         </div>
 
-        {/* Swap icon if you want that two-way arrow in the middle */}
+        {/* Swap icon (if desired) */}
         <div className="swap-icon">
           <img src="/swap.png" alt="Swap" />
         </div>
 
         {/* Destination City (To) */}
-        <div className="search-block">
+        <div className="search-block" style={{ position: "relative" }}>
           <span className="search-label">To</span>
           <input
             type="text"
@@ -62,6 +109,19 @@ function ItineraryForm({ onSubmit }) {
             onChange={handleChange}
             required
           />
+          {/* AUTOCOMPLETE DROPDOWN */}
+          {destSuggestions.length > 0 && (
+            <ul className="autocomplete-dropdown">
+              {destSuggestions.map((place) => (
+                <li
+                  key={place.geonameId}
+                  onClick={() => handleSelectSuggestion(place)}
+                >
+                  {place.name}, {place.countryName}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Departure Date */}

@@ -63,7 +63,7 @@ body {
   align-items: center;
   background-color: #ffffff; /* white background for the bar */
   border-radius: 40px; /* rounded corners for a pill-like shape */
-  overflow: hidden; /* ensures children corners follow the parent’s radius */
+  overflow: visible; /* ensures children corners follow the parent’s radius */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9); /* subtle shadow */
 }
 
@@ -258,4 +258,29 @@ body {
 
 .hero-subtitle {
   text-shadow: 0 0 5px #000000ef, 0 0 10px #989893ef, 0 0 20px #beba88ef;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  top: 60px; /* or slightly below your input */
+  left: 0;
+  right: 0;
+  background: #f8f8f8;
+  border: 1px solid #ccc;
+  border-top: none; /* might hide top border if you want a flush look */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 200px; /* so it scrolls if many results */
+  overflow-y: auto;
+  z-index: 999; /* ensure it’s on top of other elements */
+}
+
+.autocomplete-dropdown li {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.autocomplete-dropdown li:hover {
+  background-color: #f0f0f0;
 }
