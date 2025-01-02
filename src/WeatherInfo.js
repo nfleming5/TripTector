@@ -9,14 +9,17 @@ function WeatherInfo({ itinerary }) {
   const { destination, departureDate, returnDate } = itinerary;
 
   useEffect(() => {
-    if (!destination) return;
+    // Ensure destination and destination.name are defined
+    if (!destination || !destination.name) return;
 
     const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
     const baseUrl = "https://api.weatherapi.com/v1/forecast.json";
     const days = 7; // for a 7-day forecast
 
-    // Directly use the city name
-    const url = `${baseUrl}?key=${API_KEY}&q=${encodeURIComponent(destination)}&days=${days}`;
+    // Use destination.name as a string
+    const url = `${baseUrl}?key=${API_KEY}&q=${encodeURIComponent(destination.name)}&days=${days}`;
+
+    console.log("Fetching weather data from URL:", url);
 
     fetch(url)
       .then((response) => {
@@ -26,9 +29,11 @@ function WeatherInfo({ itinerary }) {
         return response.json();
       })
       .then((data) => {
+        console.log("Weather Data Received:", data);
         setWeatherData(data);
       })
       .catch((err) => {
+        console.error("Weather API Error:", err.message);
         setError(err.message);
       });
   }, [destination]);

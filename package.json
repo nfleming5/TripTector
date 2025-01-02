@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^13.2.1",
@@ -10,12 +12,13 @@
     "firebase": "^11.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-flagkit": "^2.0.4",
     "react-icons": "^5.4.0",
     "react-router-dom": "^7.1.1",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.0"
   },
-   "scripts": {
+  "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

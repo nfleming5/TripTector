@@ -61,25 +61,25 @@ body {
 .search-row {
   display: flex;
   align-items: center;
-  background-color: #ffffff; /* white background for the bar */
-  border-radius: 40px; /* rounded corners for a pill-like shape */
-  overflow: visible; /* ensures children corners follow the parent’s radius */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9); /* subtle shadow */
+  background-color: #ffffff;
+  border-radius: 40px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); /* lighter shadow */
+  /* overflow: hidden; <-- remove or comment this out so the dropdown isn’t clipped */
 }
+
 
 /* Each field block (From, To, Depart, Return) */
 .search-block {
   display: flex;
   flex-direction: column;
-  padding: 0.5rem 1rem; /* spacing around the text and input */
-  min-width: 120px; /* so they don’t collapse too small */
+  justify-content: center;
+  padding: 0.8rem 1.2rem; /* Increase from 0.5rem 1rem to give more space */
+  min-width: 120px;
 }
-
 /* The label text (From, To, etc.) */
 .search-label {
-  font-size: 0.85rem;
-  color: #666; /* a subtle gray for label text */
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.3rem; /* small gap */
+  line-height: 1;        /* keep a consistent line-height */
 }
 
 /* The inputs themselves */
@@ -93,41 +93,50 @@ body {
 
 /* If you want a small border to separate each block */
 .search-block:not(:last-child) {
-  border-right: 1px solid #ddd;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+}
+.search-block.has-icon {
+  position: relative;
 }
 
-/* The swap icon in the middle, if used */
-.swap-icon {
-  padding: 0 0.5rem;
-  cursor: pointer;
-  border-right: 1px solid #ddd;
-  display: flex;
-  align-items: center;
+
+/* The icon itself */
+.search-block.has-icon .fa-solid.fa-location-dot {
+  position: absolute;
+  left: 21px;
+  top: 2.3rem;
+  /* No translateY needed. Or you can tweak the offset to your preference. */
+  
+  color: #999;
+  pointer-events: none;
+  font-size: 1.2rem;
 }
 
-.swap-icon img {
-  width: 24px;
-  height: 24px;
+
+/* Add extra left padding to the input so text doesn’t overlap the icon */
+.search-block.has-icon input {
+  padding-left: 2.5rem;  /* adjust so there's enough space for the icon */
 }
 
 /* The final search button */
 .search-button {
-  background-color: #ff0000a8; /* e.g. Skyscanner's bluish color */
+  border-radius: 0;
+  border-top-right-radius: 40px;
+  border-bottom-right-radius: 40px;
+  background-color: #ff6b6b;
   color: #fff;
   font-size: 1rem;
   padding: 0.8rem 1.2rem;
   border: none;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  min-height: 78px; /* so it matches the vertical height of the row */
-  border-radius: 0; /* so it matches the parent's corners on the right side */
-
-  /* Because we have border-radius: 40px on the .search-row,
-     we can either let that shape the right edge or do something like border-top-right-radius, etc. */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  min-height: 78px;
 }
 
+
 .search-button:hover {
-  background-color: #000000;
+  background-color: #ff2b2b;
+  transform: translateY(-2px); /* slight lift */
 }
 
 /* RESULTS PAGE */
@@ -262,18 +271,19 @@ body {
 
 .autocomplete-dropdown {
   position: absolute;
-  top: 60px; /* or slightly below your input */
+  top: 100%;   /* directly below the parent input */
   left: 0;
   right: 0;
+  margin-top: 0.25rem; /* small gap between input and dropdown */
   background: #f8f8f8;
   border: 1px solid #ccc;
-  border-top: none; /* might hide top border if you want a flush look */
+  border-radius: 6px;  /* a little rounding, if you like */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   list-style: none;
-  margin: 0;
   padding: 0;
-  max-height: 200px; /* so it scrolls if many results */
+  max-height: 200px;
   overflow-y: auto;
-  z-index: 999; /* ensure it’s on top of other elements */
+  z-index: 999;
 }
 
 .autocomplete-dropdown li {
@@ -283,4 +293,37 @@ body {
 
 .autocomplete-dropdown li:hover {
   background-color: #f0f0f0;
+}
+.country-flag {
+  width: 20px;         /* Adjust to your preference */
+  height: 14px;        /* Slightly wide aspect ratio for flags */
+  margin-right: 8px;   /* Space between the flag and the city name */
+  vertical-align: middle; /* So the text and flag line up nicely */
+}
+/* Style for the country flag images using react-flagkit */
+.country-flag {
+  margin-right: 8px;       /* Space between flag and text */
+  vertical-align: middle;  /* Align vertically with text */
+}
+
+/* Style the default no-flag icon */
+.no-flag-icon {
+  width: 24px;             /* Match the FlagIcon size */
+  height: 16px;            /* Maintain aspect ratio */
+  margin-right: 8px;       /* Space between icon and text */
+  display: inline-block;   /* Ensure icon is inline */
+  vertical-align: middle;  /* Align vertically with text */
+  text-align: center;      /* Center the emoji */
+  font-size: 1rem;         /* Adjust size as needed */
+}
+
+/* Style the autocomplete list items to align flag and text */
+.autocomplete-dropdown li {
+  display: flex;           /* Use flex to align items */
+  align-items: center;     /* Vertically center items */
+}
+
+/* Ensure the place text takes up remaining space */
+.place-text {
+  flex: 1;                 /* Allow text to take up remaining space */
 }

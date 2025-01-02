@@ -1,5 +1,4 @@
-// src/ScamReport.js
-
+// ScamReport.js
 import {
   addDoc,
   collection,
@@ -29,6 +28,10 @@ import { scamTypes } from "./scamTypes";
 
 const capitalizeWords = (str) => {
   if (!str) return "";
+  if (typeof str !== 'string') {
+    console.error("capitalizeWords expected a string, got:", str);
+    return "";
+  }
   return str
     .split(" ")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -54,7 +57,7 @@ const getScamIcon = (scamType) => {
 
 function ScamReport({ itinerary }) {
   const [selectedScam, setSelectedScam] = useState("");
-  const [location, setLocation] = useState(itinerary?.destination || "");
+  const [location, setLocation] = useState(itinerary?.destination.name || "");
   const [comments, setComments] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -199,7 +202,7 @@ function ScamReport({ itinerary }) {
       setSuccessMessage("Scam report submitted successfully!");
       setErrorMessage("");
       setSelectedScam("");
-      setLocation(itinerary?.destination || "");
+      setLocation(itinerary?.destination.name || "");
       setComments("");
 
       // Refresh the reports list
@@ -304,28 +307,31 @@ function ScamReport({ itinerary }) {
         ) : reports.length > 0 ? (
           <>
             <div className="reports-grid">
-              {reports.map((report) => (
-                <div key={report.id} className="report-card">
-                  <div className="report-header">
-                    {getScamIcon(report.scamType)}
-                    <h4>{report.scamType}</h4>
+              {reports.map((report) => {
+                console.log("Report location:", report.location, typeof report.location);
+                return (
+                  <div key={report.id} className="report-card">
+                    <div className="report-header">
+                      {getScamIcon(report.scamType)}
+                      <h4>{report.scamType}</h4>
+                    </div>
+                    <p className="report-location">
+                      <strong>Location:</strong>{" "}
+                      {capitalizeWords(report.location)}
+                    </p>
+                    <p className="report-comments">
+                      <strong>Details:</strong>{" "}
+                      {report.comments || "No additional details."}
+                    </p>
+                    <p className="report-timestamp">
+                      <strong>Reported on:</strong>{" "}
+                      {report.timestamp
+                        ? report.timestamp.toDate().toLocaleString()
+                        : "Unknown"}
+                    </p>
                   </div>
-                  <p className="report-location">
-                    <strong>Location:</strong>{" "}
-                    {capitalizeWords(report.location)}
-                  </p>
-                  <p className="report-comments">
-                    <strong>Details:</strong>{" "}
-                    {report.comments || "No additional details."}
-                  </p>
-                  <p className="report-timestamp">
-                    <strong>Reported on:</strong>{" "}
-                    {report.timestamp
-                      ? report.timestamp.toDate().toLocaleString()
-                      : "Unknown"}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
             {/* Load More Button */}
             {reports.length >= 10 && (
