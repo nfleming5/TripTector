@@ -5,37 +5,23 @@ function WeatherInfo({ itinerary }) {
   const [weatherData, setWeatherData] = useState(null);
   const [error, setError] = useState(null);
 
-  // Destructure relevant fields from itinerary
-  const { destination, departureDate, returnDate } = itinerary;
+  const { destination, departureDate, returnDate } = itinerary || {};
 
   useEffect(() => {
-    // Ensure destination and destination.name are defined
-    if (!destination || !destination.name) return;
+    if (!destination?.name) return;
 
     const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
     const baseUrl = "https://api.weatherapi.com/v1/forecast.json";
-    const days = 7; // for a 7-day forecast
+    const days = 7; // WeatherAPI's maximum forecast days
 
-    // Use destination.name as a string
     const url = `${baseUrl}?key=${API_KEY}&q=${encodeURIComponent(destination.name)}&days=${days}`;
-
-    console.log("Fetching weather data from URL:", url);
-
     fetch(url)
       .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         return response.json();
       })
-      .then((data) => {
-        console.log("Weather Data Received:", data);
-        setWeatherData(data);
-      })
-      .catch((err) => {
-        console.error("Weather API Error:", err.message);
-        setError(err.message);
-      });
+      .then((data) => setWeatherData(data))
+      .catch((err) => setError(err.message));
   }, [destination]);
 
   if (error) {
@@ -46,18 +32,47 @@ function WeatherInfo({ itinerary }) {
     return <div className="card loading">Loading weather...</div>;
   }
 
-  // Access forecast data
-  const locationName = weatherData.location?.name;
+  // Convert user’s departure/return to JS Dates
+  const depDate = new Date(departureDate);
+  const retDate = new Date(returnDate);
+
+  // If trip start is more than 7 days away, no forecast available
+  const now = new Date();
+  const msInDay = 24 * 60 * 60 * 1000;
+  const daysUntilDeparture = Math.ceil((depDate - now) / msInDay);
+
+  if (daysUntilDeparture > 7) {
+    return (
+      <div className="card weather-section">
+        <h2>Weather for {destination.name}</h2>
+        <p>Your trip is more than 7 days away. Weather forecast is not yet available—check back closer to your trip!</p>
+      </div>
+    );
+  }
+
+  // Otherwise, filter forecast to only show days within [depDate, retDate]
   const forecastDays = weatherData.forecast?.forecastday || [];
+  const filteredForecast = forecastDays.filter((day) => {
+    const dayDate = new Date(day.date); // e.g. "2023-05-01"
+    return dayDate >= depDate && dayDate <= retDate;
+  });
+
+  // If no forecast days remain after filtering, user’s trip might extend beyond the available forecast
+  if (filteredForecast.length === 0) {
+    return (
+      <div className="card weather-section">
+        <h2>Weather for {destination.name}</h2>
+        <p>No weather data available for these dates. Part (or all) of your trip may be beyond the 7-day forecast window.</p>
+      </div>
+    );
+  }
 
   return (
     <section className="card weather-section">
-      <h2>Weather for {locationName}</h2>
-      <p>
-        {departureDate} - {returnDate}
-      </p>
+      <h2>Weather for {destination.name}</h2>
+      <p>{departureDate} - {returnDate}</p>
       <ul>
-        {forecastDays.map((day) => (
+        {filteredForecast.map((day) => (
           <li key={day.date}>
             <span>{day.date}</span>
             <span>

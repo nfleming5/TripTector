@@ -1,0 +1,82 @@
+.culture-section {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+
+  /* New: center text for headings */
+  text-align: center; 
+}
+
+.culture-section h2 {
+  margin-bottom: 1rem;
+}
+
+/* Optionally, if you want sub-headings left-aligned: */
+.culture-section h3 {
+  text-align: left; 
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #34495e;
+}
+
+/* Keep or tweak these: */
+.phrase-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* Left side: 300px fixed (or 40% if you prefer). */
+.phrase-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 300px;  /* or flex: 0 0 300px; */
+}
+
+/* Right side: automatically expand with leftover space. */
+.phrase-right {
+  flex: 1;
+  font-size: 0.95rem;
+  color: #666;
+  margin-left: 16px;
+}
+
+/* Optionally center the text here if you prefer. */
+.translated-phrase {
+  font-weight: bold;
+}
+
+/* Because .phrase-item no longer uses space-between, 
+   your .play-button is just in the .phrase-left area. */
+
+.play-button {
+  margin-right: 6px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  transition: color 0.3s;
+  color: #000;
+  padding: 0;
+  margin: 0;
+  /* Maybe add a min-width to keep it from jumping. */
+  min-width: 28px; 
+}
+
+/* On hover: color shift (example) */
+.play-button:hover {
+  color: #007BFF;
+}
+
+/* Active speaking color (example: red) */
+.play-button.active {
+  color: #ff0000;
+}
+
+/* Translated text styling */
+.translated-phrase {
+  font-weight: bold;
+}
