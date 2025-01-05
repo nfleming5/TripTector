@@ -13,7 +13,7 @@ body {
 }
 
 /* ENTIRE SCREEN BACKGROUND for the entire app */
-.app-container {
+.home-page {
   width: 100%;
   min-height: 100vh; /* ensure it covers the full viewport height */
   background: url("https://images.unsplash.com/photo-1535063406830-27dfae54262a?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHRyYWRpdGlvbmFsJTIwYmFja2dyb3VuZHxlbnwwfHwwfHx8MA%3D%3D")
@@ -67,7 +67,6 @@ body {
   /* overflow: hidden; <-- remove or comment this out so the dropdown isn’t clipped */
 }
 
-
 /* Each field block (From, To, Depart, Return) */
 .search-block {
   display: flex;
@@ -79,7 +78,7 @@ body {
 /* The label text (From, To, etc.) */
 .search-label {
   margin-bottom: 0.3rem; /* small gap */
-  line-height: 1;        /* keep a consistent line-height */
+  line-height: 1; /* keep a consistent line-height */
 }
 
 /* The inputs themselves */
@@ -99,23 +98,21 @@ body {
   position: relative;
 }
 
-
 /* The icon itself */
 .search-block.has-icon .fa-solid.fa-location-dot {
   position: absolute;
   left: 21px;
   top: 2.3rem;
   /* No translateY needed. Or you can tweak the offset to your preference. */
-  
+
   color: #999;
   pointer-events: none;
   font-size: 1.2rem;
 }
 
-
 /* Add extra left padding to the input so text doesn’t overlap the icon */
 .search-block.has-icon input {
-  padding-left: 2.5rem;  /* adjust so there's enough space for the icon */
+  padding-left: 2.5rem; /* adjust so there's enough space for the icon */
 }
 
 /* The final search button */
@@ -133,7 +130,6 @@ body {
   min-height: 78px;
 }
 
-
 .search-button:hover {
   background-color: #ff2b2b;
   transform: translateY(-2px); /* slight lift */
@@ -147,6 +143,16 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 1.5rem;
+}
+.results-page {
+  width: 100%;
+  min-height: 100vh;
+  background: url("https://img.freepik.com/premium-photo/white-cement-wall-texture-backgrounds_707519-24233.jpg")
+    no-repeat center center / cover;
+  /* or if you want a simpler color: background: #f0f0f0; */
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .card {
@@ -202,6 +208,36 @@ body {
 
 .weather-section li:last-child {
   border-bottom: none;
+}
+/* WeatherInfo Specific Styles */
+.weather-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #2c3e50;
+}
+
+/* ... (existing weather-section styling here) ... */
+
+/* New 7-day grid forecast styles */
+.weather-forecast-grid {
+  display: grid;
+  /* Create columns for each forecast day. 
+     "auto-fit" means “make as many columns as fit”, 
+     each with at least 120px width, up to 1fr leftover space. */
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  width: 80%; /* or 100%, or some large value */
+  max-width: 1200px; /* let it expand up to 1200px */
+  margin: 0 auto; /* center the grid container */
+}
+
+.weather-day {
+  background-color: rgb(255, 255, 255);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
 }
 
 /* ScamReport Specific Styles */
@@ -271,13 +307,13 @@ body {
 
 .autocomplete-dropdown {
   position: absolute;
-  top: 100%;   /* directly below the parent input */
+  top: 100%; /* directly below the parent input */
   left: 0;
   right: 0;
   margin-top: 0.25rem; /* small gap between input and dropdown */
   background: #f8f8f8;
   border: 1px solid #ccc;
-  border-radius: 6px;  /* a little rounding, if you like */
+  border-radius: 6px; /* a little rounding, if you like */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   list-style: none;
   padding: 0;
@@ -295,35 +331,152 @@ body {
   background-color: #f0f0f0;
 }
 .country-flag {
-  width: 20px;         /* Adjust to your preference */
-  height: 14px;        /* Slightly wide aspect ratio for flags */
-  margin-right: 8px;   /* Space between the flag and the city name */
+  width: 20px; /* Adjust to your preference */
+  height: 14px; /* Slightly wide aspect ratio for flags */
+  margin-right: 8px; /* Space between the flag and the city name */
   vertical-align: middle; /* So the text and flag line up nicely */
 }
 /* Style for the country flag images using react-flagkit */
 .country-flag {
-  margin-right: 8px;       /* Space between flag and text */
-  vertical-align: middle;  /* Align vertically with text */
+  margin-right: 8px; /* Space between flag and text */
+  vertical-align: middle; /* Align vertically with text */
 }
 
 /* Style the default no-flag icon */
 .no-flag-icon {
-  width: 24px;             /* Match the FlagIcon size */
-  height: 16px;            /* Maintain aspect ratio */
-  margin-right: 8px;       /* Space between icon and text */
-  display: inline-block;   /* Ensure icon is inline */
-  vertical-align: middle;  /* Align vertically with text */
-  text-align: center;      /* Center the emoji */
-  font-size: 1rem;         /* Adjust size as needed */
+  width: 24px; /* Match the FlagIcon size */
+  height: 16px; /* Maintain aspect ratio */
+  margin-right: 8px; /* Space between icon and text */
+  display: inline-block; /* Ensure icon is inline */
+  vertical-align: middle; /* Align vertically with text */
+  text-align: center; /* Center the emoji */
+  font-size: 1rem; /* Adjust size as needed */
 }
 
 /* Style the autocomplete list items to align flag and text */
 .autocomplete-dropdown li {
-  display: flex;           /* Use flex to align items */
-  align-items: center;     /* Vertically center items */
+  display: flex; /* Use flex to align items */
+  align-items: center; /* Vertically center items */
 }
 
 /* Ensure the place text takes up remaining space */
 .place-text {
-  flex: 1;                 /* Allow text to take up remaining space */
+  flex: 1; /* Allow text to take up remaining space */
+}
+
+/* Weather card overrides */
+.results-section.weather-background .card {
+  /* e.g. bigger box, teal tint, etc. */
+  max-width: 1380px;
+  background: rgba(255, 255, 255, 0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.99);
+  background: url("https://coolbackgrounds.io/images/backgrounds/blue/blue-trianglify-8e4a0501.jpg")
+    no-repeat center center / cover;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 550px;
+}
+
+/* Culture card overrides */
+.results-section.culture-background .card {
+  /* e.g. narrower, different tint, etc. */
+  max-width: 1200px;
+  background: rgb(255, 255, 255);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  font-family: "Courier New", Courier, monospace;
+  min-height: 650px;
+}
+
+/* Scam card overrides */
+.results-section.scam-background .card {
+  /* e.g. different background, etc. */
+  max-width: 900px;
+  background: rgb(255, 255, 255);
+  box-shadow: 0 2px 8px rgb(0, 0, 0);
+  min-height: 650px;
+}
+
+.results-section .card {
+  width: 600%; /* take all available horizontal space */
+  /* max-width: 600px;  <-- comment this out or remove it entirely */
+  background: rgba(255, 255, 255, 0.821);
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 0 auto; /* center within .results-section if there's leftover space */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* If you want the card inside each section to be narrower, use max-width */
+.results-section .card {
+  width: 100%;
+  max-width: 1200px; /* or whatever narrower width you prefer for the content */
+  margin: 2rem;
+  background: rgba(255, 255, 255, 0.735);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgb(0, 0, 0);
+}
+
+/* THREE different backgrounds for your sections */
+.weather-background {
+  background: url("https://wallpapers.com/images/hd/solid-light-blue-background-xunngvrppu3ids55.jpg")
+    no-repeat center center / cover;
+  box-shadow: 0 2px 8px rgb(0, 0, 0, 0.99);
+}
+.culture-background {
+  background: url("https://png.pngtree.com/background/20230617/original/pngtree-isolated-3d-rendering-of-location-pin-on-folded-city-map-with-picture-image_3708180.jpg")
+    no-repeat center center / cover;
+}
+.scam-background {
+  background: url("https://png.pngtree.com/background/20230617/original/pngtree-isolated-3d-rendering-of-location-pin-on-folded-city-map-with-picture-image_3708180.jpg")
+    no-repeat center center / cover;
+}
+
+/* Adjust text colors so they're readable on each background */
+.weather-background,
+.culture-background,
+.scam-background {
+  color: #000000;
+  /*333*/
+}
+
+.results-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* spacing inside the navbar */
+  padding: 1rem 2rem;
+  /* a background color or gradient; or keep it transparent */
+  background-color: rgba(13, 27, 85, 0.9);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.99);
+}
+
+/* The “logo” portion on the left */
+.results-nav .logo {
+  font-size: 1.8rem; /* bigger text for your brand name */
+  font-weight: bold;
+  color: #ffffff; /* or #fff, depending on your background */
+  text-decoration: none; /* remove underline if it's an <a> link */
+  font-family: "Courier New", Courier, monospace;
+}
+
+/* The nav links container on the right */
+.nav-links {
+  display: flex;
+  gap: 1.5rem; /* space between each link */
+}
+
+/* Each link style */
+.nav-links a {
+  text-decoration: none;
+  font-size: 1rem;
+  color: #ffffff; /* or #fff if your navbar is dark */
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #ff0000; /* or any hover color you like */
+}
+
+html {
+  scroll-behavior: smooth;
 }

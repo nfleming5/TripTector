@@ -28,7 +28,7 @@ import { scamTypes } from "./scamTypes";
 
 const capitalizeWords = (str) => {
   if (!str) return "";
-  if (typeof str !== 'string') {
+  if (typeof str !== "string") {
     console.error("capitalizeWords expected a string, got:", str);
     return "";
   }
@@ -308,7 +308,11 @@ function ScamReport({ itinerary }) {
           <>
             <div className="reports-grid">
               {reports.map((report) => {
-                console.log("Report location:", report.location, typeof report.location);
+                console.log(
+                  "Report location:",
+                  report.location,
+                  typeof report.location
+                );
                 return (
                   <div key={report.id} className="report-card">
                     <div className="report-header">

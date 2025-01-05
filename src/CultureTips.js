@@ -1,6 +1,6 @@
 // src/components/CultureTips.js
 import axios from "axios";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa"; // Import Play and Pause icons from React Icons
 import "./CultureTips.css"; // Import CSS for styling
@@ -41,8 +41,7 @@ const tippingData = {
     ],
   },
   japan: {
-    tippingEtiquette:
-      "Tipping is not customary and can be considered rude.",
+    tippingEtiquette: "Tipping is not customary and can be considered rude.",
     commonCustoms: [
       "Always remove shoes before entering someone's home.",
       "It is polite to bow when greeting.",
@@ -56,7 +55,8 @@ const tippingData = {
       "It's common to greet with a kiss on the cheek among acquaintances.",
     ],
   },
-  unitedStates: { // Updated property name to camelCase
+  unitedStates: {
+    // Updated property name to camelCase
     tippingEtiquette:
       "Tipping is customary in the United States. Generally, leave 15-20% of the bill in restaurants.",
     commonCustoms: [
@@ -87,8 +87,8 @@ export default function CultureTips({ itinerary }) {
     const cacheKey = `culture_${itinerary.destination.name
       .toLowerCase()
       .replace(/\s+/g, "_")}_${itinerary.destination.country
-        .toLowerCase()
-        .replace(/\s+/g, "_")}`;
+      .toLowerCase()
+      .replace(/\s+/g, "_")}`;
 
     const fetchCultureData = async () => {
       console.log("Fetching cultural data...");
@@ -122,7 +122,11 @@ export default function CultureTips({ itinerary }) {
         const countryCode = countryData.cca2; // ISO 3166-1 alpha-2
         const langCode = languageMap[countryCode] || "en-US"; // Default to English (US) if not found
 
-        if (langCode.startsWith("en") && countryCode !== "US" && countryCode !== "GB") {
+        if (
+          langCode.startsWith("en") &&
+          countryCode !== "US" &&
+          countryCode !== "GB"
+        ) {
           console.warn(
             `Defaulting to English for country code: ${countryCode}. Consider adding it to languageMap if a different primary language is desired.`
           );
@@ -173,7 +177,7 @@ export default function CultureTips({ itinerary }) {
 
   // Load available voices once when component mounts
   useEffect(() => {
-    if (!('speechSynthesis' in window)) return;
+    if (!("speechSynthesis" in window)) return;
 
     const loadVoices = () => {
       const voices = window.speechSynthesis.getVoices();
@@ -195,7 +199,7 @@ export default function CultureTips({ itinerary }) {
 
   // Function to handle speech synthesis
   const speak = (text, langCode, index) => {
-    if (!('speechSynthesis' in window)) {
+    if (!("speechSynthesis" in window)) {
       alert("Sorry, your browser does not support speech synthesis.");
       return;
     }
@@ -210,19 +214,23 @@ export default function CultureTips({ itinerary }) {
 
     // If exact match not found, find any voice that starts with the language code (e.g., 'fr' from 'fr-FR')
     if (!voice) {
-      const languagePrefix = langCode.split('-')[0];
+      const languagePrefix = langCode.split("-")[0];
       voice = availableVoices.find((v) => v.lang.startsWith(languagePrefix));
     }
 
     // If still not found, use the first available voice as a last resort
     if (!voice) {
       voice = availableVoices[0];
-      console.warn(`No exact or prefix match found for langCode "${langCode}". Using default voice: "${voice.name}" (${voice.lang})`);
+      console.warn(
+        `No exact or prefix match found for langCode "${langCode}". Using default voice: "${voice.name}" (${voice.lang})`
+      );
     }
 
     // Check if the selected voice matches the target language
-    if (!voice.lang.startsWith(langCode.split('-')[0])) {
-      console.warn(`Selected voice "${voice.name}" does not match the target language "${langCode}".`);
+    if (!voice.lang.startsWith(langCode.split("-")[0])) {
+      console.warn(
+        `Selected voice "${voice.name}" does not match the target language "${langCode}".`
+      );
       // Optionally, notify the user
       // alert("The selected voice may not accurately pronounce the translation.");
     }
@@ -242,48 +250,61 @@ export default function CultureTips({ itinerary }) {
   return (
     <section className="culture-section card">
       <h2>Culture Tips for {itinerary.destination.name}</h2>
-      <h3>Basic Phrases</h3>
-      <ul className="phrases-list">
-        {phrases.map((item, index) => (
-          <li key={index} className="phrase-item">
-            {/* LEFT COLUMN: button + translated text */}
-            <div className="phrase-left">
-              <button
-                onClick={() =>
-                  speak(
-                    item.translation,
-                    languageMap[itinerary.destination.countryCode] || "en-US",
-                    index
-                  )
-                }
-                className={`play-button ${speakingIndex === index ? "active" : ""}`}
-                aria-label={`Play pronunciation for ${item.translation}`}
-              >
-                {speakingIndex === index ? <FaPause /> : <FaPlay />}
-              </button>
+      {/* WRAP two columns in a .culture-grid container */}
+      <div className="culture-grid">
+        {/* LEFT COLUMN: scrollable phrases */}
+        <div className="phrases-column">
+          <h3>Basic Phrases</h3>
+          <ul className="phrases-list">
+            {phrases.map((item, index) => (
+              <li key={index} className="phrase-item">
+                {/* LEFT SIDE: Play button + translated phrase */}
+                <div className="phrase-left">
+                  <button
+                    onClick={() =>
+                      speak(
+                        item.translation,
+                        languageMap[itinerary.destination.countryCode] ||
+                          "en-US",
+                        index
+                      )
+                    }
+                    className={`play-button ${
+                      speakingIndex === index ? "active" : ""
+                    }`}
+                    aria-label={`Play pronunciation for ${item.translation}`}
+                  >
+                    {speakingIndex === index ? <FaPause /> : <FaPlay />}
+                  </button>
 
-              <strong className="translated-phrase">
-                {item.translation !== "Translation unavailable."
-                  ? item.translation
-                  : item.phrase}
-              </strong>
-            </div>
+                  <strong className="translated-phrase">
+                    {item.translation !== "Translation unavailable."
+                      ? item.translation
+                      : item.phrase}
+                  </strong>
+                </div>
 
-            {/* RIGHT COLUMN: the original (English) phrase */}
-            <div className="phrase-right">
-              {item.phrase}
-            </div>
-          </li>
-        ))}
-      </ul>
-      <h3>Tipping Etiquette</h3>
-      <p>{tippingEtiquette}</p>
-      <h3>Common Customs</h3>
-      <ul>
-        {commonCustoms.map((custom, index) => (
-          <li key={index}>{custom}</li>
-        ))}
-      </ul>
+                {/* RIGHT SIDE: Original phrase (English) */}
+                <div className="phrase-right">{item.phrase}</div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* RIGHT COLUMN: Tipping & Customs */}
+        <div className="etiquette-column">
+          <h3>Tipping Etiquette</h3>
+          <p>{tippingEtiquette}</p>
+
+          <h3>Common Customs</h3>
+          <ul>
+            {commonCustoms.map((custom, index) => (
+              <li key={index}>{custom}</li>
+            ))}
+          </ul>
+        </div>
+      </div>{" "}
+      {/* end .culture-grid */}
     </section>
   );
 }
