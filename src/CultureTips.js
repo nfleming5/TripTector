@@ -1,12 +1,9 @@
-// src/components/CultureTips.js
 import axios from "axios";
-import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
-import { FaPause, FaPlay } from "react-icons/fa"; // Import Play and Pause icons from React Icons
-import "./CultureTips.css"; // Import CSS for styling
+import React, { useCallback, useEffect, useState } from "react";
+import { FaPause, FaPlay } from "react-icons/fa";
+import "./CultureTips.css";
 import languageMap from "./LanguageMap";
 
-// Basic phrases to be translated
 const basicPhrases = [
   { phrase: "Hello" },
   { phrase: "Goodbye" },
@@ -30,342 +27,28 @@ const basicPhrases = [
   { phrase: "My name is..." },
 ];
 
-// Tipping and customs data
-const tippingData = {
-  france: {
-    tippingEtiquette:
-      "Tipping is appreciated but not mandatory. Usually, rounding up the bill is sufficient.",
-    commonCustoms: [
-      "Greetings often involve a handshake or cheek kisses.",
-      "It's customary to greet shopkeepers when entering and leaving.",
-    ],
-  },
-  japan: {
-    tippingEtiquette: "Tipping is not customary and can be considered rude.",
-    commonCustoms: [
-      "Always remove shoes before entering someone's home.",
-      "It is polite to bow when greeting.",
-    ],
-  },
-  mexico: {
-    tippingEtiquette:
-      "Tipping is appreciated but not mandatory. Leaving around 10% is common.",
-    commonCustoms: [
-      "Greetings typically involve a handshake.",
-      "It's common to greet with a kiss on the cheek among acquaintances.",
-    ],
-  },
-  unitedStates: {
-    // Updated property name to camelCase
-    tippingEtiquette:
-      "Tipping is customary in the United States. Generally, leave 15-20% of the bill in restaurants.",
-    commonCustoms: [
-      "Greetings typically involve a handshake.",
-      "Punctuality is appreciated in professional settings.",
-    ],
-  },
-  // Add more countries as needed
-};
-
-export default function CultureTips({ itinerary }) {
-  const [phrases, setPhrases] = useState([]);
-  const [tippingEtiquette, setTippingEtiquette] = useState("");
-  const [commonCustoms, setCommonCustoms] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [speakingIndex, setSpeakingIndex] = useState(null); // Track which phrase is being spoken
-  const [availableVoices, setAvailableVoices] = useState([]); // Store available voices
-
-  useEffect(() => {
-    if (
-      !itinerary?.destination?.name ||
-      !itinerary?.destination?.country ||
-      !itinerary?.destination?.countryCode
-    )
-      return;
-
-    const cacheKey = `culture_${itinerary.destination.name
-      .toLowerCase()
-      .replace(/\s+/g, "_")}_${itinerary.destination.country
-      .toLowerCase()
-      .replace(/\s+/g, "_")}`;
-
-    const fetchCultureData = async () => {
-      console.log("Fetching cultural data...");
-      setLoading(true);
-      setError(null);
-      try {
-        // Check cache first
-        const cached = localStorage.getItem(cacheKey);
-        if (cached) {
-          console.log("Cultural data found in cache.");
-          const parsed = JSON.parse(cached);
-          setPhrases(parsed.phrases);
-          setTippingEtiquette(parsed.tippingEtiquette);
-          setCommonCustoms(parsed.commonCustoms);
-          setLoading(false);
-          return;
-        }
-
-        // Use the passed country name directly
-        const countryName = itinerary.destination.country;
-        console.log(`Using country name from itinerary: ${countryName}`);
-
-        // Fetch country data
-        const countryData = await fetchCountryData(countryName);
-        if (!countryData) {
-          throw new Error("Country data not found.");
-        }
-        console.log("Country data fetched successfully:", countryData);
-
-        // Get language code from languageMap using countryCode
-        const countryCode = countryData.cca2; // ISO 3166-1 alpha-2
-        const langCode = languageMap[countryCode] || "en-US"; // Default to English (US) if not found
-
-        if (
-          langCode.startsWith("en") &&
-          countryCode !== "US" &&
-          countryCode !== "GB"
-        ) {
-          console.warn(
-            `Defaulting to English for country code: ${countryCode}. Consider adding it to languageMap if a different primary language is desired.`
-          );
-        }
-
-        console.log(`Detected language code: ${langCode}`); // Debugging log
-
-        // Translate phrases
-        const translated = await translatePhrases(basicPhrases, langCode);
-        console.log("Translated Phrases:", translated); // Debugging log
-
-        setPhrases(translated);
-
-        // Set tipping etiquette and customs
-        const countryNameLower = countryName.toLowerCase();
-
-        const cultureInfo = tippingData[countryNameLower] || {
-          tippingEtiquette: "Tipping practices vary. Check local customs.",
-          commonCustoms: ["Respect local traditions and practices."],
-        };
-
-        setTippingEtiquette(cultureInfo.tippingEtiquette);
-        setCommonCustoms(cultureInfo.commonCustoms);
-
-        console.log("Cultural information set successfully.");
-
-        // Cache the data
-        localStorage.setItem(
-          cacheKey,
-          JSON.stringify({
-            phrases: translated,
-            tippingEtiquette: cultureInfo.tippingEtiquette,
-            commonCustoms: cultureInfo.commonCustoms,
-          })
-        );
-        console.log("Cultural data cached successfully.");
-      } catch (err) {
-        console.error("Error fetching culture data:", err);
-        setError("Unable to load cultural information.");
-      } finally {
-        setLoading(false);
-        console.log("Loading state set to false.");
-      }
-    };
-
-    fetchCultureData();
-  }, [itinerary]);
-
-  // Load available voices once when component mounts
-  useEffect(() => {
-    if (!("speechSynthesis" in window)) return;
-
-    const loadVoices = () => {
-      const voices = window.speechSynthesis.getVoices();
-      console.log("Available Voices:", voices); // Log available voices
-      setAvailableVoices(voices);
-    };
-
-    loadVoices();
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-  }, []);
-
-  if (loading) {
-    return <div>Loading cultural tips...</div>;
-  }
-
-  if (error) {
-    return <div className="error">{error}</div>;
-  }
-
-  // Function to handle speech synthesis
-  const speak = (text, langCode, index) => {
-    if (!("speechSynthesis" in window)) {
-      alert("Sorry, your browser does not support speech synthesis.");
-      return;
-    }
-
-    // Stop any ongoing speech
-    window.speechSynthesis.cancel();
-
-    setSpeakingIndex(index); // Indicate which phrase is being spoken
-
-    // Find the exact match for langCode
-    let voice = availableVoices.find((v) => v.lang === langCode);
-
-    // If exact match not found, find any voice that starts with the language code (e.g., 'fr' from 'fr-FR')
-    if (!voice) {
-      const languagePrefix = langCode.split("-")[0];
-      voice = availableVoices.find((v) => v.lang.startsWith(languagePrefix));
-    }
-
-    // If still not found, use the first available voice as a last resort
-    if (!voice) {
-      voice = availableVoices[0];
-      console.warn(
-        `No exact or prefix match found for langCode "${langCode}". Using default voice: "${voice.name}" (${voice.lang})`
-      );
-    }
-
-    // Check if the selected voice matches the target language
-    if (!voice.lang.startsWith(langCode.split("-")[0])) {
-      console.warn(
-        `Selected voice "${voice.name}" does not match the target language "${langCode}".`
-      );
-      // Optionally, notify the user
-      // alert("The selected voice may not accurately pronounce the translation.");
-    }
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.voice = voice;
-    utterance.lang = langCode;
-
-    // When speaking ends, reset the speakingIndex
-    utterance.onend = () => {
-      setSpeakingIndex(null);
-    };
-
-    window.speechSynthesis.speak(utterance);
-  };
-
-  return (
-    <section className="culture-section card">
-      <h2>Culture Tips for {itinerary.destination.name}</h2>
-      {/* WRAP two columns in a .culture-grid container */}
-      <div className="culture-grid">
-        {/* LEFT COLUMN: scrollable phrases */}
-        <div className="phrases-column">
-          <h3>Basic Phrases</h3>
-          <ul className="phrases-list">
-            {phrases.map((item, index) => (
-              <li key={index} className="phrase-item">
-                {/* LEFT SIDE: Play button + translated phrase */}
-                <div className="phrase-left">
-                  <button
-                    onClick={() =>
-                      speak(
-                        item.translation,
-                        languageMap[itinerary.destination.countryCode] ||
-                          "en-US",
-                        index
-                      )
-                    }
-                    className={`play-button ${
-                      speakingIndex === index ? "active" : ""
-                    }`}
-                    aria-label={`Play pronunciation for ${item.translation}`}
-                  >
-                    {speakingIndex === index ? <FaPause /> : <FaPlay />}
-                  </button>
-
-                  <strong className="translated-phrase">
-                    {item.translation !== "Translation unavailable."
-                      ? item.translation
-                      : item.phrase}
-                  </strong>
-                </div>
-
-                {/* RIGHT SIDE: Original phrase (English) */}
-                <div className="phrase-right">{item.phrase}</div>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* RIGHT COLUMN: Tipping & Customs */}
-        <div className="etiquette-column">
-          <h3>Tipping Etiquette</h3>
-          <p>{tippingEtiquette}</p>
-
-          <h3>Common Customs</h3>
-          <ul>
-            {commonCustoms.map((custom, index) => (
-              <li key={index}>{custom}</li>
-            ))}
-          </ul>
-        </div>
-      </div>{" "}
-      {/* end .culture-grid */}
-    </section>
-  );
-}
-
-// Helper functions
-
-// Function to fetch country data using Rest Countries API
-const fetchCountryData = async (countryName) => {
-  try {
-    const response = await axios.get(
-      `https://restcountries.com/v3.1/name/${encodeURIComponent(
-        countryName
-      )}?fullText=true`
-    );
-    return response.data[0];
-  } catch (error) {
-    console.error("Error fetching country data:", error);
-    return null;
-  }
-};
-
-// Function to translate phrases using MyMemory Translated API
-const translatePhrases = async (phrases, targetLangCode) => {
+async function translatePhrases(phrases, targetLangCode) {
   const lang = targetLangCode.split("-")[0];
-
-  // Skip translation if target is English
   if (lang === "en") {
     return phrases.map((item) => ({ ...item, translation: item.phrase }));
   }
-
   try {
-    // Use Promise.all to translate each phrase individually
-    const translatedResults = await Promise.all(
-      phrases.map(async (phraseObj) => {
+    const results = await Promise.all(
+      phrases.map(async (item) => {
         const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
-          phraseObj.phrase
+          item.phrase
         )}&langpair=en|${lang}`;
-
         const res = await fetch(url);
         const data = await res.json();
 
         if (data.responseStatus === 200 && data.responseData?.translatedText) {
-          return {
-            ...phraseObj,
-            translation: data.responseData.translatedText,
-          };
+          return { ...item, translation: data.responseData.translatedText };
         } else {
-          console.error(
-            "Translation error for phrase:",
-            phraseObj.phrase,
-            data.responseDetails
-          );
-          return {
-            ...phraseObj,
-            translation: "Translation unavailable.",
-          };
+          return { ...item, translation: "Translation unavailable." };
         }
       })
     );
-
-    return translatedResults;
+    return results;
   } catch (error) {
     console.error("Error translating phrases:", error);
     return phrases.map((item) => ({
@@ -373,19 +56,261 @@ const translatePhrases = async (phrases, targetLangCode) => {
       translation: "Translation unavailable.",
     }));
   }
-};
+}
 
-// Define PropTypes for type checking
-CultureTips.propTypes = {
-  itinerary: PropTypes.shape({
-    destination: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      state: PropTypes.string,
-      country: PropTypes.string.isRequired,
-      countryCode: PropTypes.string,
-    }).isRequired,
-    departureDate: PropTypes.string,
-    returnDate: PropTypes.string,
-    departureAirport: PropTypes.string,
-  }).isRequired,
-};
+export default function CultureTips({ itinerary }) {
+  const [phrases, setPhrases] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [sortOption, setSortOption] = useState("date");
+  const [speakingIndex, setSpeakingIndex] = useState(null);
+  const [availableVoices, setAvailableVoices] = useState([]);
+
+  // Fetch translations
+  const fetchTranslations = useCallback(async () => {
+    try {
+      const countryCode = itinerary?.destination?.countryCode || "US";
+      const langCode = languageMap[countryCode] || "en-US";
+      const newPhrases = await translatePhrases(basicPhrases, langCode);
+      setPhrases(newPhrases);
+    } catch (err) {
+      console.error("Error fetching translations:", err);
+      setError("Unable to load translations.");
+    }
+  }, [itinerary]);
+
+  // Fetch local events
+  const fetchLocalEvents = useCallback(async () => {
+    if (!itinerary?.destination?.name || !itinerary.departureDate || !itinerary.returnDate) {
+      setEvents([]);
+      return;
+    }
+
+    try {
+      const city = encodeURIComponent(itinerary.destination.name.trim());
+      const startDateTime = new Date(itinerary.departureDate).toISOString().slice(0, 19) + "Z";
+      const endDateTime = new Date(itinerary.returnDate).toISOString().slice(0, 19) + "Z";
+
+      const TM_API_KEY = process.env.REACT_APP_CONSUMER_KEY;
+      const url = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${TM_API_KEY}&city=${city}&startDateTime=${startDateTime}&endDateTime=${endDateTime}`;
+
+      const response = await axios.get(url);
+      setEvents(response.data._embedded?.events || []);
+    } catch (err) {
+      console.error("Ticketmaster error:", err);
+      setError("Unable to load events.");
+      setEvents([]);
+    }
+  }, [itinerary]);
+
+  // Initial data fetch
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
+      if (!itinerary?.destination?.name) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        await Promise.all([fetchTranslations(), fetchLocalEvents()]);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("Unable to load content.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [itinerary, fetchTranslations, fetchLocalEvents]);
+
+  // Load voices
+  useEffect(() => {
+    if (!("speechSynthesis" in window)) return;
+
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      setAvailableVoices(voices);
+    };
+
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+
+    return () => {
+      window.speechSynthesis.cancel(); // Cleanup any ongoing speech
+    };
+  }, []);
+
+  // Speech function
+  const speak = useCallback((text, langCode, index) => {
+    if (!("speechSynthesis" in window)) {
+      alert("Sorry, your browser does not support speech synthesis.");
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    setSpeakingIndex(index);
+
+    const voice = availableVoices.find((v) => v.lang === langCode) ||
+      availableVoices.find((v) => v.lang.startsWith(langCode.split("-")[0])) ||
+      availableVoices[0];
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    if (voice) {
+      utterance.voice = voice;
+      utterance.lang = voice.lang;
+    }
+
+    utterance.onend = () => setSpeakingIndex(null);
+    utterance.onerror = () => {
+      setSpeakingIndex(null);
+      console.error("Speech synthesis error");
+    };
+
+    window.speechSynthesis.speak(utterance);
+  }, [availableVoices]);
+
+  // Sort events
+  const sortedEvents = React.useMemo(() => {
+    if (!events.length) return [];
+
+    return [...events].sort((a, b) => {
+      if (sortOption === "alpha") {
+        return a.name.localeCompare(b.name);
+      }
+      return (a.dates?.start?.localDate || "").localeCompare(b.dates?.start?.localDate || "");
+    });
+  }, [events, sortOption]);
+
+  if (loading) {
+    return <div className="loading">Loading cultural tips & events...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
+
+  return (
+    <section className="culture-section card">
+      <h2>Culture Tips &amp; Local Events for {itinerary.destination.name}</h2>
+
+      <div className="culture-grid">
+        {/* Basic Phrases Column */}
+        <div className="phrases-column">
+          <h3>Basic Phrases</h3>
+
+          {/* Hidden Sort Container for Alignment */}
+          <div className="sort-container hidden">
+            <label htmlFor="dummy-sort-select" style={{ display: 'none' }}>Sort By:</label>
+            <select id="dummy-sort-select" disabled style={{ display: 'none' }}>
+              <option value="none">None</option>
+            </select>
+          </div>
+
+          <div className="scroll-container">
+            <ul className="phrases-list">
+              {phrases.map((item, idx) => (
+                <li key={idx} className="phrase-item">
+                  <div className="phrase-left">
+                    <button
+                      onClick={() => speak(item.translation, itinerary?.destination?.countryCode || "en-US", idx)}
+                      className={`play-button ${speakingIndex === idx ? "active" : ""}`}
+                      aria-label={speakingIndex === idx ? "Pause pronunciation" : "Play pronunciation"}
+                    >
+                      {speakingIndex === idx ? <FaPause /> : <FaPlay />}
+                    </button>
+                    <strong className="translated-phrase">
+                      {item.translation}
+                    </strong>
+                  </div>
+                  <div className="phrase-right">{item.phrase}</div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Local Events Column */}
+        <div className="events-column">
+          <h3>Local Events</h3>
+          <div className="sort-container">
+            <div className="custom-select-container">
+              <select
+                id="sort-select"
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+                className="custom-select"
+                required
+                aria-label="Sort Events"
+              >
+                <option value="" disabled hidden>
+                  {/* Placeholder prompt */}
+                </option>
+                <option value="date">Date</option>
+                <option value="alpha">Alphabetical</option>
+                {/* Add more options as needed */}
+              </select>
+              <label htmlFor="sort-select" className="custom-label">Sort by</label>
+            </div>
+          </div>
+          <div className="scroll-container">
+            {sortedEvents.length === 0 ? (
+              <p>No events found in {itinerary.destination.name} for these dates.</p>
+            ) : (
+              <ul className="events-list">
+                {sortedEvents.map((evt) => (
+                  <li key={evt.id} className="phrase-item">
+                    <div className="phrase-left">
+                      {/* Placeholder for Play Button */}
+                      <button
+                        className="play-button placeholder"
+                        disabled
+                        aria-hidden="true"
+                      >
+                        {/* Empty content */}
+                      </button>
+                      <strong className="translated-phrase">
+                        {evt.url ? (
+                          <a
+                            href={evt.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Open ${evt.name} event details in new tab`}
+                          >
+                            {evt.name}
+                          </a>
+                        ) : (
+                          evt.name
+                        )}
+                      </strong>
+                    </div>
+                    <div className="phrase-right">
+                      <span>
+                        {evt.dates?.start?.localDate || "Unknown date"}
+                        {evt._embedded?.venues?.[0]?.name && ` @ ${evt._embedded.venues[0]?.name}`}
+                      </span>
+                      {evt.priceRanges?.[0] && (
+                        <span className="event-price">
+                          Price: ${evt.priceRanges[0].min} - ${evt.priceRanges[0].max} {evt.priceRanges[0].currency}
+                        </span>
+                      )}
+                      {evt.info && (
+                        <span className="event-info">
+                          {evt.info.length > 100 ? `${evt.info.slice(0, 100)}...` : evt.info}
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

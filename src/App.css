@@ -1,4 +1,31 @@
-/* App.css */
+/* src/App.css */
+
+/* Import Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Open+Sans:wght@400;600&display=swap');
+
+/* Apply 'Open Sans' to the entire body */
+body {
+  font-family: 'Open Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* Apply 'Poppins' to all h2 and h3 elements */
+h2, h3 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600; /* Boldness as per import */
+}
+
+/* Ensure other text elements use 'Open Sans' */
+.card, p, li {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400; /* Regular weight */
+}
+/* Optional: Apply 'Poppins' to other specific elements if needed */
+.hero-title {
+  font-family: 'Poppins', sans-serif;
+}
 
 /* RESET */
 html,
@@ -145,14 +172,13 @@ body {
   gap: 1.5rem;
 }
 .results-page {
-  width: 100%;
   min-height: 100vh;
-  background: url("https://img.freepik.com/premium-photo/white-cement-wall-texture-backgrounds_707519-24233.jpg")
-    no-repeat center center / cover;
-  /* or if you want a simpler color: background: #f0f0f0; */
+  /* Keep your existing background, but also add a small gradient overlay: */
+  background: linear-gradient(to bottom, #f7f7f7, #eaeaea);
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  /* etc. */
 }
 
 .card {
@@ -188,56 +214,164 @@ body {
 }
 
 /* WeatherInfo Specific Styles */
+/* WeatherInfo Component Styles */
 .weather-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #2c3e50; /* Ensure text is dark */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 
+    0 8px 32px rgba(31, 38, 135, 0.15),
+    0 4px 8px rgba(0, 0, 0, 0.07);
+  max-width: 1200px;
+  margin: 2rem auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.weather-section ul {
-  width: 100%;
+.weather-section h2 {
+  color: #1a237e;
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  letter-spacing: -0.5px;
 }
 
-.weather-section li {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
+.weather-section p {
+  color: #455a64;
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
-.weather-section li:last-child {
-  border-bottom: none;
-}
-/* WeatherInfo Specific Styles */
-.weather-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #2c3e50;
-}
-
-/* ... (existing weather-section styling here) ... */
-
-/* New 7-day grid forecast styles */
 .weather-forecast-grid {
   display: grid;
-  /* Create columns for each forecast day. 
-     "auto-fit" means “make as many columns as fit”, 
-     each with at least 120px width, up to 1fr leftover space. */
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  width: 80%; /* or 100%, or some large value */
-  max-width: 1200px; /* let it expand up to 1200px */
-  margin: 0 auto; /* center the grid container */
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  margin-top: 2rem;
 }
 
 .weather-day {
-  background-color: rgb(255, 255, 255);
-  border-radius: 8px;
-  padding: 1rem;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+  border-radius: 16px;
+  padding: 1.5rem;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.weather-day:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 8px 12px rgba(0, 0, 0, 0.1),
+    0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.day-date {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a237e;
+  margin-bottom: 1rem;
+}
+
+.day-icon {
+  margin: 0.5rem 0;
+}
+
+.day-icon img {
+  width: 64px;
+  height: 64px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.day-temps {
+  font-size: 1.2rem;
+  margin: 0.8rem 0;
+  color: #37474f;
+}
+
+.temp-high {
+  color: #e53935;
+  font-weight: 600;
+}
+
+.temp-low {
+  color: #1565c0;
+  font-weight: 600;
+}
+
+.day-condition {
+  font-size: 1rem;
+  color: #546e7a;
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
+.day-rain-chance,
+.day-wind {
+  font-size: 0.9rem;
+  color: #78909c;
+  margin: 0.3rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.day-rain-chance::before {
+  content: "💧";
+  font-size: 0.9rem;
+}
+
+.day-wind::before {
+  content: "💨";
+  font-size: 0.9rem;
+}
+
+/* Loading and Error States */
+.card.loading,
+.card.error {
+  text-align: center;
+  padding: 2rem;
+  color: #455a64;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+}
+
+.card.error {
+  color: #d32f2f;
+  border: 1px solid rgba(211, 47, 47, 0.2);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .weather-section {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+
+  .weather-section h2 {
+    font-size: 1.8rem;
+  }
+
+  .weather-forecast-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+
+  .day-date {
+    font-size: 1rem;
+  }
+
+  .day-temps {
+    font-size: 1.1rem;
+  }
 }
 
 /* ScamReport Specific Styles */
@@ -367,42 +501,47 @@ body {
 /* Weather card overrides */
 .results-section.weather-background .card {
   /* e.g. bigger box, teal tint, etc. */
-  max-width: 1380px;
+  max-width: 1300px;
   background: rgba(255, 255, 255, 0);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.99);
+  box-shadow: 0 4px 8px rgb(0, 0, 0, 0.15);
   background: url("https://coolbackgrounds.io/images/backgrounds/blue/blue-trianglify-8e4a0501.jpg")
     no-repeat center center / cover;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  min-height: 550px;
+  min-height: 650px;
+  margin: 2rem auto;
 }
 
 /* Culture card overrides */
 .results-section.culture-background .card {
   /* e.g. narrower, different tint, etc. */
-  max-width: 1200px;
+  max-width: 1300px;
   background: rgb(255, 255, 255);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 8px rgb(0, 0, 0, 0.15);
   font-family: "Courier New", Courier, monospace;
   min-height: 650px;
+  margin: 2rem auto;
 }
 
 /* Scam card overrides */
 .results-section.scam-background .card {
   /* e.g. different background, etc. */
-  max-width: 900px;
+  max-width: 700px;
   background: rgb(255, 255, 255);
-  box-shadow: 0 2px 8px rgb(0, 0, 0);
+  box-shadow: 0 4px 8px rgb(0, 0, 0, 0.15);
   min-height: 650px;
+  margin: 2rem auto;
 }
 
 .results-section .card {
-  width: 600%; /* take all available horizontal space */
-  /* max-width: 600px;  <-- comment this out or remove it entirely */
-  background: rgba(255, 255, 255, 0.821);
+  /* width: 600%; <-- comment this out or delete */
+  /* Instead, keep: */
+  width: 100%;
+  max-width: 1200px; 
+  margin: 2rem auto; /* ensures the card is horizontally centered */
+  background: rgba(255, 255, 255, 0.735);
   border-radius: 8px;
   padding: 2rem;
-  margin: 0 auto; /* center within .results-section if there's leftover space */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgb(0, 0, 0, 0.15);
 }
 
 /* If you want the card inside each section to be narrower, use max-width */
@@ -413,21 +552,37 @@ body {
   background: rgba(255, 255, 255, 0.735);
   border-radius: 8px;
   padding: 2rem;
-  box-shadow: 0 2px 8px rgb(0, 0, 0);
-}
+  box-shadow: 0 4px 8px rgb(0, 0, 0, 0.15);}
 
 /* THREE different backgrounds for your sections */
 .weather-background {
-  background: url("https://wallpapers.com/images/hd/solid-light-blue-background-xunngvrppu3ids55.jpg")
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.6), /* bigger alpha => more "whitening" effect */
+      rgba(255, 255, 255, 0.2)
+    ),
+    url("https://wallpapers.com/images/hd/solid-light-blue-background-xunngvrppu3ids55.jpg")
     no-repeat center center / cover;
-  box-shadow: 0 2px 8px rgb(0, 0, 0, 0.99);
 }
 .culture-background {
-  background: url("https://png.pngtree.com/background/20230617/original/pngtree-isolated-3d-rendering-of-location-pin-on-folded-city-map-with-picture-image_3708180.jpg")
+  background: 
+    linear-gradient(
+      to bottom, 
+      rgba(255,255,255,0.3), 
+      rgba(255,255,255,0.0)
+    ),
+    url("https://images.unsplash.com/photo-1534298261662-f8fdd25317db?q=80&w=2970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
     no-repeat center center / cover;
 }
 .scam-background {
-  background: url("https://png.pngtree.com/background/20230617/original/pngtree-isolated-3d-rendering-of-location-pin-on-folded-city-map-with-picture-image_3708180.jpg")
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.3),
+      rgba(255,255,255,0.1)
+    ),
+    url("https://png.pngtree.com/background/20230617/original/pngtree-isolated-3d-rendering-of-location-pin-on-folded-city-map-with-picture-image_3708180.jpg")
     no-repeat center center / cover;
 }
 
@@ -467,15 +622,31 @@ body {
 
 /* Each link style */
 .nav-links a {
+  position: relative;
+  color: #fff;
   text-decoration: none;
-  font-size: 1rem;
-  color: #ffffff; /* or #fff if your navbar is dark */
-  transition: color 0.3s ease;
+  transition: color 0.2s ease;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: #ff0000;
+  transition: width 0.3s ease;
 }
 
 .nav-links a:hover {
-  color: #ff0000; /* or any hover color you like */
+  color: #ff0000;
 }
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
 
 html {
   scroll-behavior: smooth;

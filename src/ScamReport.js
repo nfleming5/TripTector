@@ -289,17 +289,25 @@ function ScamReport({ itinerary }) {
       <div className="existing-reports">
         <h3>Existing Scam Reports in {capitalizeWords(location)}</h3>
 
-        {/* Sorting Options */}
-        <div className="sorting-options">
-          <label htmlFor="sortOrder">Sort by:</label>
-          <select
-            id="sortOrder"
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-          >
-            <option value="desc">Newest First</option>
-            <option value="asc">Oldest First</option>
-          </select>
+        <div className="sort-container">
+          <div className="custom-select-container">
+            <select
+              id="sortOrder"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="custom-select"
+              required
+              aria-label="Sort Reports"
+            >
+              <option value="" disabled hidden>
+                {/* Placeholder prompt if needed */}
+              </option>
+              <option value="desc">Newest First</option>
+              <option value="asc">Oldest First</option>
+              {/* Add more options if needed */}
+            </select>
+            <label htmlFor="sortOrder" className="custom-label">Sort by</label>
+          </div>
         </div>
 
         {loadingReports ? (

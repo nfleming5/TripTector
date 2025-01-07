@@ -1,108 +1,419 @@
-.culture-section {
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
+/* CultureTips.css */
 
-  /* New: center text for headings */
-  text-align: center;
+/* Apply box-sizing: border-box globally */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-.culture-section h2 {
+/* Define CSS Variables for Easy Maintenance */
+:root {
+  --primary-color: #2563eb;
+  --secondary-color: #f8fafc;
+  --accent-color: #3b82f6;
+  --text-color: #1e293b;
+  --background-color: #ffffff;
+  --border-color: #e2e8f0;
+  --hover-color: #f1f5f9;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Base Styles for Culture Section */
+.culture-section {
+  padding: 2.5rem;
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #fff 100%);
+  border-radius: 16px;
+  text-align: center;
+  color: var(--text-color);
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.6s ease-out forwards;
+}
+
+/* Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+/* Illustration */
+.culture-illustration {
+  width: 100%;
+  max-height: 150px;
+  object-fit: contain;
   margin-bottom: 1rem;
 }
 
-/* Optionally, if you want sub-headings left-aligned: */
-.culture-section h3 {
-  text-align: left;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
-  color: #34495e;
+/* Loading and Error States */
+.culture-section .loading,
+.culture-section .error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  font-size: 1.1rem;
+  color: #666;
 }
 
-/* Keep or tweak these: */
+.culture-section .error {
+  color: #e74c3c;
+}
+
+/* Headings */
+.culture-section h2 {
+  margin-bottom: 0rem;
+  color: var(--text-color);
+  font-size: 2.25rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.culture-section h3 {
+  margin: 0.75rem 0 1.5rem 0;
+  color: var(--text-color);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Culture Grid using CSS Grid */
+.culture-grid {
+  width: 100%;
+  max-width: 1600px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+}
+
+/* Columns Layout within Grid */
+.phrases-column,
+.events-column {
+  padding: 1.5rem;
+  background-color: var(--background-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.phrases-column:hover,
+.events-column:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Hidden Sort Container for Alignment */
+.sort-container.hidden {
+  visibility: hidden;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.sort-container.hidden label,
+.sort-container.hidden select {
+  display: none;
+}
+
+/* Sort Container */
+.sort-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+.sort-label {
+  font-size: 0.75rem;
+  color: #6c757d;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+/* Custom Select Container */
+.custom-select-container {
+  position: relative;
+  width: 200px;
+  height: 48px;
+}
+
+.custom-select {
+  width: 100%;
+  height: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--text-color);
+  background: white;
+  appearance: none;
+  transition: all 0.2s ease;
+  padding-top: 1rem; /* Increase top padding to make room for label */
+  padding-bottom: 0rem; /* Reduce bottom padding */
+}
+
+.custom-select:hover {
+  border-color: var(--accent-color);
+}
+
+.custom-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.custom-label {
+  position: absolute;
+  left: 1rem;
+  top: 0.3rem;
+  font-size: 0.75rem;
+  color: #6c757d;
+  pointer-events: none;
+  background-color: transparent;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 600;
+}
+
+.custom-select:focus + .custom-label,
+.custom-select:valid + .custom-label {
+  color: #6c757d;
+}
+
+.custom-select-container::after {
+  content: "▼";
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  pointer-events: none;
+}
+
+.custom-select option {
+  text-align: left;
+}
+
+/* Scroll Containers */
+.scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 575px;
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+  padding: 0.75rem;
+  background: var(--background-color);
+  border-radius: 8px;
+}
+
+/* Lists */
+.phrases-list,
+.events-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* List Items */
 .phrase-item {
   display: flex;
-  align-items: flex-start;
-  margin-bottom: 8px;
-  padding: 4px 0;
-  border-bottom: 1px solid #eee;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background-color: var(--background-color);
+  transition: all 0.2s ease-in-out;
 }
 
-/* Left side: 300px fixed (or 40% if you prefer). */
+.phrase-item:last-child {
+  margin-bottom: 0;
+}
+
+.phrase-item:hover {
+  background-color: var(--hover-color);
+  transform: translateX(4px);
+  border-color: var(--accent-color);
+}
+
+/* Phrase Layout */
 .phrase-left {
   display: flex;
   align-items: center;
-  gap: 8px;
-  width: 300px; /* or flex: 0 0 300px; */
+  gap: 0.75rem;
 }
 
-/* Right side: automatically expand with leftover space. */
 .phrase-right {
   flex: 1;
+  text-align: right;
+  color: #64748b;
+  margin-left: 1rem;
+  padding-right: 1rem;
   font-size: 0.95rem;
-  color: #666;
-  margin-left: 16px;
+  word-wrap: break-word;
 }
 
-/* Optionally center the text here if you prefer. */
-.translated-phrase {
-  font-weight: bold;
+/* Nested Elements */
+.events-list .phrase-right span,
+.events-list .phrase-right a,
+.events-list .phrase-right .event-price,
+.events-list .phrase-right .event-info {
+  display: block;
+  margin: 0;
+  padding: 0;
 }
 
-/* Because .phrase-item no longer uses space-between, 
-   your .play-button is just in the .phrase-left area. */
+.events-column .phrase-left {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  gap: 0.25rem !important;
+}
 
+.events-column .phrase-left button,
+.events-column .phrase-left strong {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Play Button */
 .play-button {
-  margin-right: 6px;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
   cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.play-button:hover {
+  background-color: var(--primary-color);
+  color: white;
+  transform: scale(1.05);
+}
+
+.play-button.active {
+  background-color: var(--accent-color);
+  color: white;
+  animation: pulse 1.5s infinite;
+}
+
+/* Placeholder Play Button */
+.play-button.placeholder {
+  visibility: hidden;
+  pointer-events: none;
+  width: 16px;
+  height: 48px;
+  margin-right: 0 !important;
+  padding: 0 !important;
   background: none;
   border: none;
-  font-size: 1.2em;
-  transition: color 0.3s;
-  color: #000;
-  padding: 0;
-  margin: 0;
-  /* Maybe add a min-width to keep it from jumping. */
-  min-width: 28px;
 }
 
-/* On hover: color shift (example) */
-.play-button:hover {
-  color: #ff0000;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .culture-section {
+    padding: 1.5rem;
+  }
+
+  .culture-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .culture-section h2 {
+    font-size: 1.75rem;
+  }
+
+  .culture-section h3 {
+    font-size: 1.5rem;
+  }
+
+  .custom-select-container {
+    width: 100%;
+  }
+
+  .sort-container {
+    margin-left: 0;
+  }
+
+  .scroll-container {
+    max-height: 450px;
+  }
 }
 
-/* Active speaking color (example: red) */
-.play-button.active {
-  color: #ff0000;
+/* Scrollable Menu Styles */
+.scrollable-menu,
+.scrollable-menu li {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
 }
 
-/* Translated text styling */
-.translated-phrase {
-  font-weight: bold;
-}
-.culture-section.card {
-  width: 100%;
-  max-width: 1800px;
-  margin: 1rem auto; /* less margin so it’s wider on the page */
-  /* optional: remove background-color if you want more space visually */
-}
-
-.culture-grid {
-  display: flex;
-  gap: 2rem;
-  width: 100%; /* fill the entire card’s horizontal space */
-  margin-top: 1rem;
-}
-
-.phrases-column {
-  flex: 2; /* 2 parts */
-  max-height: 400px;
+.scrollable-menu {
+  max-height: 300px;
   overflow-y: auto;
-  border-right: 1px solid #ddd;
-  padding-right: 1rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: #fff;
 }
 
-.etiquette-column {
-  flex: 1; /* 1 part */
-  padding-left: 1rem;
+.scrollable-menu li {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.scrollable-menu li:last-child {
+  border-bottom: none;
+}
+
+.scrollable-menu li:hover {
+  background-color: var(--hover-color);
 }
